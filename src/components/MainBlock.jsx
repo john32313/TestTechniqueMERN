@@ -12,10 +12,8 @@ import {
   Button,
   Box,
   Modal,
-  FormControlLabel,
-  Switch,
-  FormGroup,
 } from '@material-ui/core';
+import ModalProduct from './ModalProduct';
 import fakeProducts from '../products.json';
 
 const useStyles = makeStyles({
@@ -53,11 +51,14 @@ const useStyles = makeStyles({
   },
 });
 
-export default function MainBlock() {
+export default function MainBlock({
+  infoModal,
+  setInfoModal,
+  editProdModal,
+  setEditProdModal,
+}) {
   const [search, setSearch] = useState('');
   const [products, setProducts] = useState([]);
-  const [editProd, setEditProd] = useState({});
-  const [infoModal, setInfoModal] = useState({ open: false });
   const styles = useStyles();
 
   useEffect(() => {
@@ -66,14 +67,6 @@ export default function MainBlock() {
 
   const handleDelete = (e, id) => {
     alert(`Edition produit ${id}`);
-  };
-
-  const handleEdit = (e) => {
-    setEditProd((prev) => ({ ...prev, [e.target.name]: e.target.value }));
-  };
-
-  const updateProduct = () => {
-    console.log(editProd);
   };
 
   const ShowGrid = (prod) =>
@@ -100,7 +93,7 @@ export default function MainBlock() {
             size="small"
             color="primary"
             onClick={() => {
-              setEditProd(p);
+              setEditProdModal(p);
               setInfoModal({ open: true, ...p, edit: true });
             }}
           >
@@ -130,55 +123,9 @@ export default function MainBlock() {
         </>
       );
     }
-    if (infoModal.edit) {
+    if (infoModal.edit || infoModal.add) {
       return (
-        <FormGroup>
-          <TextField
-            onChange={handleEdit}
-            value={editProd.name}
-            label="Nom:"
-            name="name"
-          />
-          <TextField
-            onChange={handleEdit}
-            value={editProd.type}
-            label="Categorie:"
-            name="type"
-          />
-          <TextField
-            onChange={handleEdit}
-            value={editProd.price}
-            label="Prix"
-            name="price"
-            type="number"
-          />
-          <TextField
-            onChange={handleEdit}
-            value={editProd.rating}
-            label="Note:"
-            name="rating"
-            type="number"
-          />
-          <TextField
-            onChange={handleEdit}
-            value={editProd.warranty_years}
-            label="Garantie"
-            type="number"
-            name="warranty_years"
-          />
-          <FormControlLabel
-            control={
-              <Switch
-                checked={editProd.available}
-                onChange={handleEdit}
-                name="available"
-                color="primary"
-              />
-            }
-            label=" : En Stock"
-          />
-          <Button onClick={updateProduct}>Valider</Button>
-        </FormGroup>
+        <ModalProduct editProd={editProdModal} setEditProd={setEditProdModal} />
       );
     }
     return <h3>Erreur de chargement</h3>;

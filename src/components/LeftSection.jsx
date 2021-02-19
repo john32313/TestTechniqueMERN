@@ -17,6 +17,7 @@ const useStyles = makeStyles({
     textAlign: 'center',
     border: '1px solid black',
     width: '20vw',
+    minWidth: '200px',
 
     '& .categorieSection': {
       paddingTop: '10%',
@@ -24,7 +25,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function LeftSection() {
+export default function LeftSection({ setInfoModal, setEditProdModal }) {
   const [categories, setCategories] = useState([]);
   const styles = useStyles();
   useEffect(() => {
@@ -51,7 +52,15 @@ export default function LeftSection() {
   };
 
   const handleClickAddProduct = () => {
-    alert('Add Product');
+    setEditProdModal({
+      name: '',
+      type: '',
+      rating: 0,
+      price: 0,
+      available: false,
+      warranty_years: 0,
+    });
+    setInfoModal({ open: true, add: true });
   };
 
   return (

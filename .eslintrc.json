@@ -1,0 +1,37 @@
+{
+    "parser": "babel-eslint",
+    "settings": {
+        "react": {
+            "version": "detect"
+        }
+    },
+    "env": {
+        "browser": true,
+        "es2021": true,
+        "jest":true
+    },
+    "extends": [
+        "plugin:prettier/recommended",
+        "plugin:react/recommended",
+        "airbnb"
+    ],
+    "parserOptions": {
+        "ecmaFeatures": {
+            "jsx": true
+        },
+        "ecmaVersion": 12,
+        "sourceType": "module"
+    },
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+        "no-console": "warn",
+        "no-debugger": "warn",
+        "react/jsx-filename-extension": "warn",
+        "react/no-unescaped-entities": "warn",
+        "react/prop-types": "warn",
+        "react/jsx-curly-newline": "off",
+        "react/jsx-one-expression-per-line": "off"
+      }
+}

@@ -8,6 +8,7 @@ import {
   Checkbox,
   makeStyles,
 } from '@material-ui/core';
+import PropTypes from 'prop-types';
 import products from '../products.json';
 
 const useStyles = makeStyles({
@@ -25,7 +26,11 @@ const useStyles = makeStyles({
   },
 });
 
-export default function LeftSection({ setInfoModal, setEditProdModal }) {
+export default function LeftSection({
+  setInfoModal,
+  setEditProdModal,
+  searchFilter,
+}) {
   const [categories, setCategories] = useState([]);
   const styles = useStyles();
   useEffect(() => {
@@ -50,6 +55,10 @@ export default function LeftSection({ setInfoModal, setEditProdModal }) {
       }),
     );
   };
+
+  useEffect(() => {
+    searchFilter(categories.filter((c) => c.checked).map((c) => c.type));
+  }, [categories]);
 
   const handleClickAddProduct = () => {
     setEditProdModal({
@@ -82,6 +91,7 @@ export default function LeftSection({ setInfoModal, setEditProdModal }) {
               control={
                 <Checkbox
                   name={cat.type}
+                  value={cat.type}
                   checked={cat.checked}
                   onChange={(e) => handleChangeCheckboxCategories(e, index)}
                 />
@@ -94,3 +104,9 @@ export default function LeftSection({ setInfoModal, setEditProdModal }) {
     </Grid>
   );
 }
+
+LeftSection.propTypes = {
+  setInfoModal: PropTypes.func.isRequired,
+  setEditProdModal: PropTypes.func.isRequired,
+  searchFilter: PropTypes.func.isRequired,
+};

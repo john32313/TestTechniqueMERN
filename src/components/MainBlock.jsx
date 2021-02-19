@@ -13,6 +13,7 @@ import {
   Box,
   Modal,
 } from '@material-ui/core';
+import PropTypes from 'prop-types';
 import ModalProduct from './ModalProduct';
 import fakeProducts from '../products.json';
 
@@ -56,6 +57,7 @@ export default function MainBlock({
   setInfoModal,
   editProdModal,
   setEditProdModal,
+  filter,
 }) {
   const [search, setSearch] = useState('');
   const [products, setProducts] = useState([]);
@@ -130,6 +132,16 @@ export default function MainBlock({
     }
     return <h3>Erreur de chargement</h3>;
   }
+
+  const filteredSeach = () => {
+    if (search !== '') {
+      return ShowGrid(
+        products.filter((p) => p.name.toLowerCase().includes(search)),
+      );
+    }
+    return ShowGrid(products.filter((p) => filter.includes(p.type)));
+  };
+
   return (
     <Grid container className={styles.mainBlock}>
       <Modal
@@ -145,12 +157,36 @@ export default function MainBlock({
         onChange={(e) => setSearch(e.target.value.toLowerCase())}
       />
       <Grid className={styles.cardGrid} container>
-        {search !== ''
-          ? ShowGrid(
-              products.filter((p) => p.name.toLowerCase().includes(search)),
-            )
+        {search !== '' || filter.length !== 0
+          ? filteredSeach()
           : ShowGrid(products)}
       </Grid>
     </Grid>
   );
 }
+
+MainBlock.propTypes = {
+  infoModal: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    rating: PropTypes.number.isRequired,
+    warranty_years: PropTypes.number.isRequired,
+    available: PropTypes.bool.isRequired,
+    open: PropTypes.bool,
+    add: PropTypes.bool,
+    edit: PropTypes.bool,
+    read: PropTypes.bool,
+  }).isRequired,
+  setInfoModal: PropTypes.func.isRequired,
+  editProdModal: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    rating: PropTypes.number.isRequired,
+    warranty_years: PropTypes.number.isRequired,
+    available: PropTypes.bool.isRequired,
+  }).isRequired,
+  setEditProdModal: PropTypes.func.isRequired,
+  filter: PropTypes.arrayOf(PropTypes.string).isRequired,
+};

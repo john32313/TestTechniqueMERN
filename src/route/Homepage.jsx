@@ -7,6 +7,7 @@ import MainBlock from '../components/MainBlock';
 export default function Homepage() {
   const [infoModal, setInfoModal] = useState({ open: false });
   const [editProdModal, setEditProdModal] = useState({});
+  const [filter, searchFilter] = useState([]);
   return (
     <>
       <Header />
@@ -14,8 +15,10 @@ export default function Homepage() {
         <LeftSection
           setEditProdModal={setEditProdModal}
           setInfoModal={setInfoModal}
+          searchFilter={searchFilter}
         />
         <MainBlock
+          filter={filter}
           editProdModal={editProdModal}
           setEditProdModal={setEditProdModal}
           infoModal={infoModal}

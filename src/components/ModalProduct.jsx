@@ -6,6 +6,7 @@ import {
   Button,
   FormGroup,
 } from '@material-ui/core';
+import PropTypes from 'prop-types';
 
 export default function ModalProduct({ editProd, setEditProd }) {
   const handleEdit = (e) => {
@@ -75,3 +76,15 @@ export default function ModalProduct({ editProd, setEditProd }) {
     </FormGroup>
   );
 }
+
+ModalProduct.propTypes = {
+  editProd: PropTypes.shape({
+    name: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    price: PropTypes.number.isRequired,
+    rating: PropTypes.number.isRequired,
+    warranty_years: PropTypes.number.isRequired,
+    available: PropTypes.bool.isRequired,
+  }).isRequired,
+  setEditProd: PropTypes.func.isRequired,
+};

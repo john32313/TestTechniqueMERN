@@ -1,30 +1,6 @@
 const router = require('express').Router();
 const { productModel } = require('../model/index');
-
-const verifBodyFieldBeforeInsOrUpd = (req, res, next) => {
-  const { name, price, type, rating, warranty_years, available } = req.body;
-  if (typeof name === 'undefined')
-    return res.status(400).json({ message: 'Field name is missing' });
-  if (typeof price === 'undefined')
-    return res.status(400).json({ message: 'Field price is missing' });
-  if (typeof type === 'undefined')
-    return res.status(400).json({ message: 'Field type is missing' });
-  if (typeof rating === 'undefined')
-    return res.status(400).json({ message: 'Field rating is missing' });
-  if (typeof warranty_years === 'undefined')
-    return res.status(400).json({ message: 'Field warranty_years is missing' });
-  if (typeof available === 'undefined')
-    return res.status(400).json({ message: 'Field available is missing' });
-  req.bodyField = {
-    name,
-    price,
-    type,
-    rating,
-    warranty_years,
-    available,
-  };
-  return next();
-};
+const { verifBodyFieldBeforeInsOrUpd } = require('../middleware');
 
 router.get('/', async (req, res) => {
   const product = await productModel.get();
@@ -42,8 +18,21 @@ router.get('/:id', async (req, res) => {
 
 router.post('/', verifBodyFieldBeforeInsOrUpd, async (req, res) => {
   const result = await productModel.post(req.bodyField);
-  if (result.result.ok === 1) return res.sendStatus(201);
+  if (result.result.ok) return res.sendStatus(201);
   return res.status(422).json({ message: 'Error creating ressource' });
+});
+
+router.put('/:id', verifBodyFieldBeforeInsOrUpd, async (req, res) => {
+  const result = await productModel.put(Number(req.params.id), req.bodyField);
+  console.log(result);
+  if (result.result.ok && result.result.n) return res.sendStatus(201);
+  return res.status(422).json({ message: 'Error updating ressource' });
+});
+
+router.delete('/:id', async (req, res) => {
+  const result = await productModel.delete({ _id: Number(req.params.id) });
+  if (result.result.n) return res.sendStatus(204);
+  return res.status(422).json({ message: 'Error deleting ressource' });
 });
 
 module.exports = router;

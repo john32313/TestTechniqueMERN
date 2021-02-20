@@ -1,11 +1,20 @@
+process.env.NODE_ENV = 'test';
 const request = require('supertest');
 const app = require('../app');
+const { connection, client } = require('../model/connection');
+const product = require('./products.json');
 
 xdescribe('GET /product', function () {
+  beforeEach(async () => {
+    const db = await connection;
+    await db.collection('product').deleteMany({});
+    await db.collection('product').insertMany(product);
+  });
+
   it('response 200 for all product', (done) => {
     request(app)
       .get('/api/product')
-      .set('Accept', 'application/json')
+      .set('Accept', /json/)
       .expect('Content-Type', /json/)
       .expect(200, done);
   });
@@ -26,3 +35,37 @@ xdescribe('GET /product', function () {
       .expect(404, done);
   });
 });
+
+xdescribe('POST /product', function () {
+  beforeEach(async () => {
+    const db = await connection;
+    await db.collection('product').deleteMany({});
+    await db.collection('product').insertMany(product);
+  });
+  const data = {
+    name: 'frigo',
+    type: 'electromenager',
+    price: 600,
+    rating: 5,
+    warranty_years: 6,
+    available: true,
+  };
+
+  it('sould response 201', (done) => {
+    request(app)
+      .post('/api/product')
+      .send(data)
+      .set('Accept', 'application/json')
+      .expect(201, done);
+  });
+
+  it('should response 400 missing fields', (done) => {
+    request(app)
+      .post('/api/product')
+      .send({ name: 'frigo' })
+      .set('Accept', 'application/json')
+      .expect(400, done);
+  });
+});
+
+client.close();

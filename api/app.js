@@ -7,6 +7,7 @@ const { client } = require('./model/connection');
 const { productController } = require('./controller');
 
 app.use(morgan('dev'));
+app.use(express.json());
 
 app.use('/api/product', productController);
 

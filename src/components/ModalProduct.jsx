@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import {
   FormControlLabel,
@@ -6,14 +7,34 @@ import {
   Button,
   FormGroup,
 } from '@material-ui/core';
+import axios from 'axios';
 import PropTypes from 'prop-types';
 
-export default function ModalProduct({ editProd, setEditProd }) {
+const verifdataForm = (data) => {
+  if (!data.name.length) return false;
+  if (!data.type.length) return false;
+  if (!data.price) return false;
+  return true;
+};
+export default function ModalProduct({
+  infoModal,
+  setInfoModal,
+  editProd,
+  setEditProd,
+}) {
   const handleEdit = (e) => {
     if (e.target.name === 'available') {
       setEditProd((prev) => ({ ...prev, [e.target.name]: e.target.checked }));
+    } else if (['price', 'rating', 'warranty_years'].includes(e.target.name)) {
+      setEditProd((prev) => ({
+        ...prev,
+        [e.target.name]: Number(e.target.value),
+      }));
     } else {
-      setEditProd((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+      setEditProd((prev) => ({
+        ...prev,
+        [e.target.name]: e.target.value,
+      }));
     }
   };
 
@@ -24,7 +45,27 @@ export default function ModalProduct({ editProd, setEditProd }) {
       rating: Number(editProd.rating),
       warranty_years: Number(editProd.warranty_years),
     };
-    console.log(dataReadyToSend);
+    if (verifdataForm(dataReadyToSend)) {
+      if (infoModal.edit) {
+        return axios
+          .put(
+            `http://localhost:5000/api/product/${dataReadyToSend._id}`,
+            dataReadyToSend,
+          )
+          .then((response) => console.log('modifié', response))
+          .catch((error) => console.log(error));
+      }
+      if (infoModal.add) {
+        return axios
+          .post('http://localhost:5000/api/product', dataReadyToSend)
+          .then((response) => console.log('crée', response))
+          .catch((error) => console.log(error));
+      }
+      setInfoModal({ open: false });
+      return null;
+    }
+    console.log('Champ vide');
+    return null;
   };
   return (
     <FormGroup>
@@ -87,4 +128,17 @@ ModalProduct.propTypes = {
     available: PropTypes.bool.isRequired,
   }).isRequired,
   setEditProd: PropTypes.func.isRequired,
+  setInfoModal: PropTypes.func.isRequired,
+  infoModal: PropTypes.shape({
+    name: PropTypes.string,
+    type: PropTypes.string,
+    price: PropTypes.number,
+    rating: PropTypes.number,
+    warranty_years: PropTypes.number,
+    available: PropTypes.bool,
+    open: PropTypes.bool,
+    add: PropTypes.bool,
+    edit: PropTypes.bool,
+    read: PropTypes.bool,
+  }).isRequired,
 };

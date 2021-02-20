@@ -2,8 +2,16 @@
 
 # dependencies
 /node_modules
+/api/node_modules
 /.pnp
 .pnp.js
+
+# api
+/api/node_modules
+/api/.env
+/api/pnpm-lock.yaml
+/api/testMongoDb.js
+/api/request.http
 
 # testing
 /coverage

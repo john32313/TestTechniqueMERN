@@ -14,8 +14,8 @@ import {
   Modal,
 } from '@material-ui/core';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 import ModalProduct from './ModalProduct';
-import fakeProducts from '../products.json';
 
 const useStyles = makeStyles({
   mainBlock: {
@@ -63,12 +63,18 @@ export default function MainBlock({
   const [products, setProducts] = useState([]);
   const styles = useStyles();
 
-  useEffect(() => {
-    setProducts(fakeProducts);
+  useEffect(async () => {
+    const { data } = await axios.get('http://localhost:5000/api/product');
+    setProducts(data);
   }, []);
 
   const handleDelete = (e, id) => {
-    alert(`Edition produit ${id}`);
+    axios
+      .delete(`http://localhost:5000/api/product/${id}`)
+      .then((res) => {
+        console.log('deleted : ', res);
+      })
+      .catch((err) => console.error(err));
   };
 
   const ShowGrid = (prod) =>
@@ -127,7 +133,12 @@ export default function MainBlock({
     }
     if (infoModal.edit || infoModal.add) {
       return (
-        <ModalProduct editProd={editProdModal} setEditProd={setEditProdModal} />
+        <ModalProduct
+          setInfoModal={setInfoModal}
+          editProd={editProdModal}
+          setEditProd={setEditProdModal}
+          infoModal={infoModal}
+        />
       );
     }
     return <h3>Erreur de chargement</h3>;

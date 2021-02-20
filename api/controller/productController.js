@@ -25,7 +25,7 @@ router.post('/', verifBodyFieldBeforeInsOrUpd, async (req, res) => {
 router.put('/:id', verifBodyFieldBeforeInsOrUpd, async (req, res) => {
   const result = await productModel.put(Number(req.params.id), req.bodyField);
   console.log(result);
-  if (result.result.ok && result.result.n) return res.sendStatus(201);
+  if (result.result.ok && result.result.nModified) return res.sendStatus(201);
   return res.status(422).json({ message: 'Error updating ressource' });
 });
 

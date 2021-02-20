@@ -16,6 +16,7 @@ export default function Homepage() {
           setEditProdModal={setEditProdModal}
           setInfoModal={setInfoModal}
           searchFilter={searchFilter}
+          infoModal={infoModal}
         />
         <MainBlock
           filter={filter}

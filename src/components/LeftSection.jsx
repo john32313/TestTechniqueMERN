@@ -8,8 +8,8 @@ import {
   Checkbox,
   makeStyles,
 } from '@material-ui/core';
+import axios from 'axios';
 import PropTypes from 'prop-types';
-import products from '../products.json';
 
 const useStyles = makeStyles({
   leftSectionBlock: {
@@ -33,7 +33,10 @@ export default function LeftSection({
 }) {
   const [categories, setCategories] = useState([]);
   const styles = useStyles();
-  useEffect(() => {
+  useEffect(async () => {
+    const { data: products } = await axios.get(
+      'http://localhost:5000/api/product',
+    );
     setCategories(
       Array.from(new Set(products.map((p) => p.type))).map((c) => ({
         type: c,

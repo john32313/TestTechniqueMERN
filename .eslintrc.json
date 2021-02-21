@@ -37,6 +37,7 @@
         "implicit-arrow-linebreak": "off",
         "no-underscore-dangle": "off",
         "no-unused-vars": "off",
-        "function-paren-newline": "off"
+        "function-paren-newline": "off",
+        "object-curly-newline": "warn"
       }
 }

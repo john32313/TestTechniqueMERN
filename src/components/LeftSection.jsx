@@ -9,10 +9,10 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 
 import { categoriesSelector } from '../store/selectors';
 import checkCategorieAction from '../store/actions/categoryAction';
+import { modalAddAction } from '../store/actions/modalAction';
 
 const useStyles = makeStyles({
   leftSectionBlock: {
@@ -20,6 +20,8 @@ const useStyles = makeStyles({
     margin: '1% 0 0 1%',
     textAlign: 'center',
     border: '1px solid black',
+    width: '20vw',
+    minWidth: '200px',
 
     '& .categorieSection': {
       paddingTop: '10%',
@@ -27,7 +29,7 @@ const useStyles = makeStyles({
   },
 });
 
-export default function LeftSection({ setInfoModal, setEditProdModal }) {
+export default function LeftSection() {
   const styles = useStyles();
   const dispatch = useDispatch();
   const categories = useSelector(categoriesSelector);
@@ -37,15 +39,7 @@ export default function LeftSection({ setInfoModal, setEditProdModal }) {
   };
 
   const handleClickAddProduct = () => {
-    setEditProdModal({
-      name: '',
-      type: '',
-      rating: 0,
-      price: 0,
-      available: false,
-      warranty_years: 0,
-    });
-    setInfoModal({ open: true, add: true });
+    dispatch(modalAddAction);
   };
 
   return (
@@ -79,8 +73,3 @@ export default function LeftSection({ setInfoModal, setEditProdModal }) {
     </Grid>
   );
 }
-
-LeftSection.propTypes = {
-  setInfoModal: PropTypes.func.isRequired,
-  setEditProdModal: PropTypes.func.isRequired,
-};

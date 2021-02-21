@@ -14,16 +14,24 @@ import {
   Modal,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import PropTypes from 'prop-types';
 import ModalProduct from './ModalProduct';
 
 import { remove } from '../store/actions/productActions';
 import {
+  modalReadAction,
+  modalEditAction,
+  modalCloseAction,
+} from '../store/actions/modalAction';
+import {
   productsSelector,
   categoriesCheckedSelector,
+  modalSelector,
 } from '../store/selectors';
 
 const useStyles = makeStyles({
+  mainBlock: {
+    width: '70vw',
+  },
   cardProduct: {
     width: '25%',
     minWidth: '200px',
@@ -55,15 +63,11 @@ const useStyles = makeStyles({
   },
 });
 
-export default function MainBlock({
-  infoModal,
-  setInfoModal,
-  editProdModal,
-  setEditProdModal,
-}) {
+export default function MainBlock() {
   const [search, setSearch] = useState('');
   const products = useSelector(productsSelector);
   const filter = useSelector(categoriesCheckedSelector);
+  const infoModal = useSelector(modalSelector);
   const styles = useStyles();
   const dispatch = useDispatch();
 
@@ -79,9 +83,7 @@ export default function MainBlock({
           p.available ? styles.cardProduct : styles.cardProductNoneAvailable
         }
       >
-        <CardActionArea
-          onClick={() => setInfoModal({ open: true, ...p, read: true })}
-        >
+        <CardActionArea onClick={() => dispatch(modalReadAction(p))}>
           <CardContent>
             <h3>{p.name}</h3>
             <Box components="div" className={styles.boxSubtitlesCard}>
@@ -95,8 +97,7 @@ export default function MainBlock({
             size="small"
             color="primary"
             onClick={() => {
-              setEditProdModal(p);
-              setInfoModal({ open: true, ...p, edit: true });
+              dispatch(modalEditAction(p));
             }}
           >
             Editer
@@ -116,24 +117,17 @@ export default function MainBlock({
     if (infoModal.read) {
       return (
         <>
-          <h3>Nom: {infoModal.name}</h3>
-          <h4>Categorie: {infoModal.type}</h4>
-          <h4>Prix: {infoModal.price}€</h4>
-          <h4>Evaluation: {infoModal.rating}/5</h4>
-          <h4>Garantie: {infoModal.warranty_years} an(s)</h4>
-          <h4>En stock: {infoModal.available ? 'Oui' : 'Non'}</h4>
+          <h3>Nom: {infoModal.product.name}</h3>
+          <h4>Categorie: {infoModal.product.type}</h4>
+          <h4>Prix: {infoModal.product.price}€</h4>
+          <h4>Evaluation: {infoModal.product.rating}/5</h4>
+          <h4>Garantie: {infoModal.product.warranty_years} an(s)</h4>
+          <h4>En stock: {infoModal.product.available ? 'Oui' : 'Non'}</h4>
         </>
       );
     }
     if (infoModal.edit || infoModal.add) {
-      return (
-        <ModalProduct
-          setInfoModal={setInfoModal}
-          editProd={editProdModal}
-          setEditProd={setEditProdModal}
-          infoModal={infoModal}
-        />
-      );
+      return <ModalProduct />;
     }
     return <h3>Erreur de chargement</h3>;
   }
@@ -155,10 +149,7 @@ export default function MainBlock({
 
   return (
     <Grid container className={styles.mainBlock}>
-      <Modal
-        open={infoModal.open}
-        onClose={() => setInfoModal({ open: false })}
-      >
+      <Modal open={infoModal.open} onClose={() => dispatch(modalCloseAction)}>
         <div className={styles.modalProduct}>{showModalBody()}</div>
       </Modal>
       <TextField
@@ -175,28 +166,3 @@ export default function MainBlock({
     </Grid>
   );
 }
-
-MainBlock.propTypes = {
-  infoModal: PropTypes.shape({
-    name: PropTypes.string,
-    type: PropTypes.string,
-    price: PropTypes.number,
-    rating: PropTypes.number,
-    warranty_years: PropTypes.number,
-    available: PropTypes.bool,
-    open: PropTypes.bool,
-    add: PropTypes.bool,
-    edit: PropTypes.bool,
-    read: PropTypes.bool,
-  }).isRequired,
-  setInfoModal: PropTypes.func.isRequired,
-  editProdModal: PropTypes.shape({
-    name: PropTypes.string,
-    type: PropTypes.string,
-    price: PropTypes.number,
-    rating: PropTypes.number,
-    warranty_years: PropTypes.number,
-    available: PropTypes.bool,
-  }).isRequired,
-  setEditProdModal: PropTypes.func.isRequired,
-};

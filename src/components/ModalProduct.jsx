@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   FormControlLabel,
   Switch,
@@ -6,24 +6,49 @@ import {
   Button,
   FormGroup,
 } from '@material-ui/core';
-import { useDispatch } from 'react-redux';
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { update, add } from '../store/actions/productActions';
+import { modalCloseAction } from '../store/actions/modalAction';
+import { modalSelector } from '../store/selectors';
 
-const verifdataForm = (data) => {
-  if (!data.name.length) return false;
-  if (!data.type.length) return false;
-  if (!data.price) return false;
-  return true;
-};
-export default function ModalProduct({
-  infoModal,
-  setInfoModal,
-  editProd,
-  setEditProd,
-}) {
+export default function ModalProduct() {
   const dispatch = useDispatch();
+  const infoModal = useSelector(modalSelector);
+  const [infoError, setInfoError] = useState({});
+  const [editProd, setEditProd] = useState({
+    name: '',
+    type: '',
+    rating: 0,
+    price: 0,
+    available: false,
+    warranty_years: 0,
+  });
+
+  const verifdataForm = (data) => {
+    let ok = true;
+    let error = {};
+    if (!data.name.length) {
+      error = { ...error, name: true };
+      ok = false;
+    }
+    if (!data.type.length) {
+      error = { ...error, type: true };
+      ok = false;
+    }
+    if (!data.price) {
+      error = { ...error, price: true };
+      ok = false;
+    }
+    setInfoError(error);
+    return ok;
+  };
+
+  useEffect(() => {
+    if (!infoModal.add) {
+      setEditProd(infoModal.product);
+    }
+  }, []);
 
   const handleEdit = (e) => {
     if (e.target.name === 'available') {
@@ -55,26 +80,31 @@ export default function ModalProduct({
       if (infoModal.add) {
         dispatch(add(dataReadyToSend));
       }
-      setInfoModal({ open: false });
+      dispatch(modalCloseAction);
     }
-    console.log('Champ vide');
-    return null;
   };
+
   return (
     <FormGroup>
       <TextField
+        error={infoError.name}
+        helperText="Info obligatoire"
         onChange={handleEdit}
         value={editProd.name}
         label="Nom:"
         name="name"
       />
       <TextField
+        error={infoError.type}
+        helperText="Info obligatoire"
         onChange={handleEdit}
         value={editProd.type}
         label="Categorie:"
         name="type"
       />
       <TextField
+        error={infoError.price}
+        helperText="Info obligatoire"
         onChange={handleEdit}
         value={editProd.price}
         label="Prix"
@@ -98,6 +128,7 @@ export default function ModalProduct({
       <FormControlLabel
         control={
           <Switch
+            value="available"
             checked={editProd.available}
             onChange={handleEdit}
             name="available"
@@ -110,28 +141,3 @@ export default function ModalProduct({
     </FormGroup>
   );
 }
-
-ModalProduct.propTypes = {
-  editProd: PropTypes.shape({
-    name: PropTypes.string.isRequired,
-    type: PropTypes.string.isRequired,
-    price: PropTypes.number.isRequired,
-    rating: PropTypes.number.isRequired,
-    warranty_years: PropTypes.number.isRequired,
-    available: PropTypes.bool.isRequired,
-  }).isRequired,
-  setEditProd: PropTypes.func.isRequired,
-  setInfoModal: PropTypes.func.isRequired,
-  infoModal: PropTypes.shape({
-    name: PropTypes.string,
-    type: PropTypes.string,
-    price: PropTypes.number,
-    rating: PropTypes.number,
-    warranty_years: PropTypes.number,
-    available: PropTypes.bool,
-    open: PropTypes.bool,
-    add: PropTypes.bool,
-    edit: PropTypes.bool,
-    read: PropTypes.bool,
-  }).isRequired,
-};

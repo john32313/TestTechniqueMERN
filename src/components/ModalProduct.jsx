@@ -1,4 +1,3 @@
-/* eslint-disable no-underscore-dangle */
 import React from 'react';
 import {
   FormControlLabel,
@@ -7,8 +6,10 @@ import {
   Button,
   FormGroup,
 } from '@material-ui/core';
-import axios from 'axios';
+import { useDispatch } from 'react-redux';
 import PropTypes from 'prop-types';
+
+import { update, add } from '../store/actions/productActions';
 
 const verifdataForm = (data) => {
   if (!data.name.length) return false;
@@ -22,6 +23,8 @@ export default function ModalProduct({
   editProd,
   setEditProd,
 }) {
+  const dispatch = useDispatch();
+
   const handleEdit = (e) => {
     if (e.target.name === 'available') {
       setEditProd((prev) => ({ ...prev, [e.target.name]: e.target.checked }));
@@ -47,22 +50,12 @@ export default function ModalProduct({
     };
     if (verifdataForm(dataReadyToSend)) {
       if (infoModal.edit) {
-        return axios
-          .put(
-            `http://localhost:5000/api/product/${dataReadyToSend._id}`,
-            dataReadyToSend,
-          )
-          .then((response) => console.log('modifié', response))
-          .catch((error) => console.log(error));
+        dispatch(update(dataReadyToSend));
       }
       if (infoModal.add) {
-        return axios
-          .post('http://localhost:5000/api/product', dataReadyToSend)
-          .then((response) => console.log('crée', response))
-          .catch((error) => console.log(error));
+        dispatch(add(dataReadyToSend));
       }
       setInfoModal({ open: false });
-      return null;
     }
     console.log('Champ vide');
     return null;

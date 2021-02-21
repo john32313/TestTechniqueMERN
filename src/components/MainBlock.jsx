@@ -13,14 +13,17 @@ import {
   Box,
   Modal,
 } from '@material-ui/core';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
-import axios from 'axios';
 import ModalProduct from './ModalProduct';
 
+import { remove } from '../store/actions/productActions';
+import {
+  productsSelector,
+  categoriesCheckedSelector,
+} from '../store/selectors';
+
 const useStyles = makeStyles({
-  mainBlock: {
-    width: '70vw',
-  },
   cardProduct: {
     width: '25%',
     minWidth: '200px',
@@ -57,24 +60,15 @@ export default function MainBlock({
   setInfoModal,
   editProdModal,
   setEditProdModal,
-  filter,
 }) {
   const [search, setSearch] = useState('');
-  const [products, setProducts] = useState([]);
+  const products = useSelector(productsSelector);
+  const filter = useSelector(categoriesCheckedSelector);
   const styles = useStyles();
-
-  useEffect(async () => {
-    const { data } = await axios.get('http://localhost:5000/api/product');
-    setProducts(data);
-  }, []);
+  const dispatch = useDispatch();
 
   const handleDelete = (e, id) => {
-    axios
-      .delete(`http://localhost:5000/api/product/${id}`)
-      .then((res) => {
-        console.log('deleted : ', res);
-      })
-      .catch((err) => console.error(err));
+    dispatch(remove(id));
   };
 
   const ShowGrid = (prod) =>
@@ -145,12 +139,18 @@ export default function MainBlock({
   }
 
   const filteredSeach = () => {
+    let filteredResult = [...products];
     if (search !== '') {
-      return ShowGrid(
-        products.filter((p) => p.name.toLowerCase().includes(search)),
-      );
+      filteredResult = [
+        ...filteredResult.filter((p) => p.name.toLowerCase().includes(search)),
+      ];
     }
-    return ShowGrid(products.filter((p) => filter.includes(p.type)));
+    if (filter.length) {
+      filteredResult = [
+        ...filteredResult.filter((p) => filter.includes(p.type)),
+      ];
+    }
+    return ShowGrid(filteredResult);
   };
 
   return (
@@ -199,5 +199,4 @@ MainBlock.propTypes = {
     available: PropTypes.bool,
   }).isRequired,
   setEditProdModal: PropTypes.func.isRequired,
-  filter: PropTypes.arrayOf(PropTypes.string).isRequired,
 };

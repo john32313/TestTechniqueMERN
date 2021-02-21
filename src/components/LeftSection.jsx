@@ -1,5 +1,5 @@
 /* eslint-disable function-paren-newline */
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import {
   Grid,
   Button,
@@ -8,8 +8,11 @@ import {
   Checkbox,
   makeStyles,
 } from '@material-ui/core';
-import axios from 'axios';
+import { useDispatch, useSelector } from 'react-redux';
 import PropTypes from 'prop-types';
+
+import { categoriesSelector } from '../store/selectors';
+import checkCategorieAction from '../store/actions/categoryAction';
 
 const useStyles = makeStyles({
   leftSectionBlock: {
@@ -17,8 +20,6 @@ const useStyles = makeStyles({
     margin: '1% 0 0 1%',
     textAlign: 'center',
     border: '1px solid black',
-    width: '20vw',
-    minWidth: '200px',
 
     '& .categorieSection': {
       paddingTop: '10%',
@@ -26,42 +27,14 @@ const useStyles = makeStyles({
   },
 });
 
-export default function LeftSection({
-  setInfoModal,
-  setEditProdModal,
-  searchFilter,
-}) {
-  const [categories, setCategories] = useState([]);
+export default function LeftSection({ setInfoModal, setEditProdModal }) {
   const styles = useStyles();
-  useEffect(async () => {
-    const { data: products } = await axios.get(
-      'http://localhost:5000/api/product',
-    );
-    setCategories(
-      Array.from(new Set(products.map((p) => p.type))).map((c) => ({
-        type: c,
-        checked: false,
-      })),
-    );
-  }, []);
+  const dispatch = useDispatch();
+  const categories = useSelector(categoriesSelector);
 
-  const handleChangeCheckboxCategories = (e, index) => {
-    setCategories((prev) =>
-      prev.map((c, i) => {
-        if (i === index) {
-          return {
-            type: e.target.name,
-            checked: e.target.checked,
-          };
-        }
-        return c;
-      }),
-    );
+  const handleChangeCheckboxCategories = (e) => {
+    dispatch(checkCategorieAction(e.target.name));
   };
-
-  useEffect(() => {
-    searchFilter(categories.filter((c) => c.checked).map((c) => c.type));
-  }, [categories]);
 
   const handleClickAddProduct = () => {
     setEditProdModal({
@@ -88,15 +61,14 @@ export default function LeftSection({
       <Grid className="categorieSection" container direction="column">
         <h3>Catégories</h3>
         <FormControl>
-          {categories.map((cat, index) => (
+          {categories.map((cat) => (
             <FormControlLabel
               key={cat.type}
               control={
                 <Checkbox
                   name={cat.type}
-                  value={cat.type}
                   checked={cat.checked}
-                  onChange={(e) => handleChangeCheckboxCategories(e, index)}
+                  onChange={handleChangeCheckboxCategories}
                 />
               }
               label={cat.type}
@@ -111,5 +83,4 @@ export default function LeftSection({
 LeftSection.propTypes = {
   setInfoModal: PropTypes.func.isRequired,
   setEditProdModal: PropTypes.func.isRequired,
-  searchFilter: PropTypes.func.isRequired,
 };

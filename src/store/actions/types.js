@@ -1,0 +1,3 @@
+export const PRODUCT_GET_ALL = 'PRODUCT_GET_ALL';
+
+export const CATEGORY_CHECK = 'CATEGORY_CHECK';

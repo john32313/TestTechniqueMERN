@@ -34,7 +34,6 @@ function App() {
     axios
       .get('http://localhost:5000/api/login')
       .then((res) => {
-        console.log(res);
         localStorage.setItem('user', res.data.email);
         history.push('/');
       })

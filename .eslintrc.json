@@ -38,6 +38,6 @@
         "no-underscore-dangle": "off",
         "no-unused-vars": "off",
         "function-paren-newline": "off",
-        "object-curly-newline": "warn"
+        "object-curly-newline": "off"
       }
 }

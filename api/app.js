@@ -7,7 +7,7 @@ const { client } = require('./model/connection');
 const { verifValidJwtToken } = require('./middleware');
 
 const { productController, loginController } = require('./controller');
-app.use(cors({ credentials: true }));
+app.use(cors({ credentials: true, origin: true }));
 app.use(cookieParser());
 app.use(morgan('dev'));
 app.use(express.json());

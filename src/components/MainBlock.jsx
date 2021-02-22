@@ -14,18 +14,12 @@ import {
   Modal,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
-import ModalProduct from './ModalProduct';
 
 import { remove } from '../store/actions/productActions';
-import {
-  modalReadAction,
-  modalEditAction,
-  modalCloseAction,
-} from '../store/actions/modalAction';
+import { modalReadAction, modalEditAction } from '../store/actions/modalAction';
 import {
   productsSelector,
   categoriesCheckedSelector,
-  modalSelector,
 } from '../store/selectors';
 
 const useStyles = makeStyles((theme) => ({
@@ -53,25 +47,12 @@ const useStyles = makeStyles((theme) => ({
     display: 'flex',
     justifyContent: 'space-between',
   },
-  modalProduct: {
-    backgroundColor: 'white',
-    width: '50vw',
-    position: 'absolute',
-    top: '10%',
-    left: '25%',
-    padding: '2%',
-    [theme.breakpoints.down('sm')]: {
-      width: '90vw',
-      left: '5%',
-    },
-  },
 }));
 
 export default function MainBlock() {
   const [search, setSearch] = useState('');
   const products = useSelector(productsSelector);
   const filter = useSelector(categoriesCheckedSelector);
-  const infoModal = useSelector(modalSelector);
   const styles = useStyles();
   const dispatch = useDispatch();
 
@@ -117,25 +98,6 @@ export default function MainBlock() {
       </Card>
     ));
 
-  function showModalBody() {
-    if (infoModal.read) {
-      return (
-        <>
-          <h3>Nom: {infoModal.product.name}</h3>
-          <h4>Categorie: {infoModal.product.type}</h4>
-          <h4>Prix: {infoModal.product.price}€</h4>
-          <h4>Evaluation: {infoModal.product.rating}/5</h4>
-          <h4>Garantie: {infoModal.product.warranty_years} an(s)</h4>
-          <h4>En stock: {infoModal.product.available ? 'Oui' : 'Non'}</h4>
-        </>
-      );
-    }
-    if (infoModal.edit || infoModal.add) {
-      return <ModalProduct />;
-    }
-    return <h3>Erreur de chargement</h3>;
-  }
-
   const filteredSeach = () => {
     let filteredResult = [...products];
     if (search !== '') {
@@ -153,9 +115,6 @@ export default function MainBlock() {
 
   return (
     <Grid container className={styles.mainBlock}>
-      <Modal open={infoModal.open} onClose={() => dispatch(modalCloseAction)}>
-        <div className={styles.modalProduct}>{showModalBody()}</div>
-      </Modal>
       <TextField
         id="standard-basic"
         label="Rechercher"

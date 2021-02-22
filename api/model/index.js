@@ -1,4 +1,5 @@
 const productModel = require('./productModel');
+const userModel = require('./userModel');
 
 module.exports = {
   productModel: {
@@ -6,5 +7,8 @@ module.exports = {
     post: productModel.postProduct,
     delete: productModel.deleteProduct,
     put: productModel.updateProduct,
+  },
+  userModel: {
+    get: userModel.getUser,
   },
 };

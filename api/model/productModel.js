@@ -1,4 +1,4 @@
-const { client, connection } = require('./connection');
+const { connection } = require('./connection');
 const uuid = require('uuid-int');
 
 const getProduct = async (filter = {}) => {

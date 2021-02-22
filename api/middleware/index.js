@@ -1,3 +1,4 @@
 const verifBodyFieldBeforeInsOrUpd = require('./verifBodyFieldBeforeInsOrUpd');
+const verifValidJwtToken = require('./verifValideJwtToken');
 
-module.exports = { verifBodyFieldBeforeInsOrUpd };
+module.exports = { verifBodyFieldBeforeInsOrUpd, verifValidJwtToken };

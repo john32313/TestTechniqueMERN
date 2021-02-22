@@ -32,6 +32,12 @@
         "react/no-unescaped-entities": "warn",
         "react/prop-types": "warn",
         "react/jsx-curly-newline": "off",
-        "react/jsx-one-expression-per-line": "off"
+        "react/jsx-one-expression-per-line": "off",
+        "react/jsx-wrap-multilines": ["error", {"declaration": false, "assignment": false}],
+        "implicit-arrow-linebreak": "off",
+        "no-underscore-dangle": "off",
+        "no-unused-vars": "off",
+        "function-paren-newline": "off",
+        "object-curly-newline": "off"
       }
 }

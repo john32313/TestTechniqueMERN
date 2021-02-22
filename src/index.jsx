@@ -1,12 +1,21 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Provider } from 'react-redux';
+import { BrowserRouter as Router } from 'react-router-dom';
+import axios from 'axios';
 import App from './App';
+import store from './store/store';
+import './index.css';
 import reportWebVitals from './reportWebVitals';
 
+axios.defaults.withCredentials = true;
+
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  <Provider store={store}>
+    <Router>
+      <App />
+    </Router>
+  </Provider>,
   document.getElementById('root'),
 );
 

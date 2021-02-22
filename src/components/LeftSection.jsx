@@ -6,6 +6,7 @@ import {
   FormControl,
   FormControlLabel,
   Checkbox,
+  useTheme,
   makeStyles,
 } from '@material-ui/core';
 import { useDispatch, useSelector } from 'react-redux';
@@ -14,20 +15,25 @@ import { categoriesSelector } from '../store/selectors';
 import checkCategorieAction from '../store/actions/categoryAction';
 import { modalAddAction } from '../store/actions/modalAction';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   leftSectionBlock: {
-    padding: '2%',
-    margin: '1% 0 0 1%',
+    marginTop: '4%',
+    backgroundColor: '#edebeb',
+  },
+  categorieSection: {
+    flexDirection: 'column',
+    alignContent: 'center',
+    justifyContent: 'center',
     textAlign: 'center',
-    border: '1px solid black',
-    width: '20vw',
-    minWidth: '200px',
-
-    '& .categorieSection': {
-      paddingTop: '10%',
+  },
+  categorieList: {
+    [theme.breakpoints.down('sm')]: {
+      justifyContent: 'center',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
     },
   },
-});
+}));
 
 export default function LeftSection() {
   const styles = useStyles();
@@ -43,18 +49,20 @@ export default function LeftSection() {
   };
 
   return (
-    <Grid container direction="column" className={styles.leftSectionBlock}>
-      <Button
-        variant="contained"
-        color="primary"
-        disableElevation
-        onClick={handleClickAddProduct}
-      >
-        Ajouter un Produit
-      </Button>
-      <Grid className="categorieSection" container direction="column">
-        <h3>Catégories</h3>
-        <FormControl>
+    <Grid container className={styles.leftSectionBlock}>
+      <Grid container justify="center">
+        <Button
+          variant="contained"
+          color="primary"
+          disableElevation
+          onClick={handleClickAddProduct}
+        >
+          Ajouter un Produit
+        </Button>
+      </Grid>
+      <Grid className={styles.categorieSection} container>
+        <h3 className={styles.title}>Catégories</h3>
+        <FormControl className={styles.categorieList}>
           {categories.map((cat) => (
             <FormControlLabel
               key={cat.type}

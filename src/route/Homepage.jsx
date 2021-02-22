@@ -16,13 +16,13 @@ export default function Homepage() {
   return (
     <>
       <Header />
-      <Grid
-        className="MuiGrid-align-content-xs-center"
-        container
-        justify="space-between"
-      >
-        <LeftSection />
-        <MainBlock />
+      <Grid container>
+        <Grid item xs={12} md={3}>
+          <LeftSection />
+        </Grid>
+        <Grid item xs={12} md={9}>
+          <MainBlock />
+        </Grid>
       </Grid>
     </>
   );

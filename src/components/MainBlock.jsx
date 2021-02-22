@@ -28,26 +28,26 @@ import {
   modalSelector,
 } from '../store/selectors';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
   mainBlock: {
-    width: '70vw',
-  },
-  cardProduct: {
-    width: '25%',
-    minWidth: '200px',
-    margin: '2%',
-    backgroundColor: '#AEB4A9',
-  },
-  cardProductNoneAvailable: {
-    width: '25%',
-    minWidth: '200px',
-    margin: '2%',
-    backgroundColor: '#C37D92',
+    justifyContent: 'center',
+    [theme.breakpoints.up('md')]: {
+      paddingLeft: '2%',
+      justifyContent: 'flex-end',
+    },
   },
   cardGrid: {
-    justifyContent: 'flex-start',
     maxHeight: '80vh',
     overflowY: 'auto',
+    flexDirection: 'column',
+  },
+  cardProduct: {
+    margin: '1%',
+    color: '#8ac24e',
+  },
+  cardProductNoneAvailable: {
+    margin: '1%',
+    color: '#d66358',
   },
   boxSubtitlesCard: {
     display: 'flex',
@@ -60,8 +60,12 @@ const useStyles = makeStyles({
     top: '10%',
     left: '25%',
     padding: '2%',
+    [theme.breakpoints.down('sm')]: {
+      width: '90vw',
+      left: '5%',
+    },
   },
-});
+}));
 
 export default function MainBlock() {
   const [search, setSearch] = useState('');
